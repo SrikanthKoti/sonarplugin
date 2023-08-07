@@ -10,6 +10,9 @@ dist/
 # Compiled Java class files
 *.class
 
+# Maven build directory
+/target/
+
 # Compiled Python bytecode
 *.py[cod]
 
@@ -25,6 +28,15 @@ dist/
 
 # JetBrains IDE
 .idea/
+
+# IDE-specific files
+.classpath
+.project
+.settings/
+.vscode/
+
+# SonarQube analysis output
+.sonar/
 
 # Unit test reports
 TEST*.xml
@@ -48,3 +60,11 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Temporary files
+*.tmp
+*.tmp.*
+*.bak
+*.swp
+Thumbs.db
+ehthumbs.db
+Desktop.ini
