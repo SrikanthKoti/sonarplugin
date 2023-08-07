@@ -1,0 +1,51 @@
+# Compiled Java classes
+*.class
+
+# Maven build directory
+/target/
+
+# IDE-specific files
+.idea/
+.classpath
+.project
+.settings/
+
+./node_modules
+# Eclipse-specific files
+/.metadata/
+/bin/
+
+# NetBeans-specific files
+/nbproject/
+/build/
+
+# Visual Studio Code-specific files
+.vscode/
+
+# IntelliJ IDEA-specific files
+*.iml
+*.ipr
+*.iws
+out/
+.idea_modules/
+.idea_workspace.xml
+.idea_tasks.iml
+.idea.d/
+
+# SonarQube analysis output
+.sonar/
+
+# Logs
+*.log
+*.log.*
+logs/
+*.out
+
+# Temporary files
+*.tmp
+*.tmp.*
+*.bak
+*.swp
+Thumbs.db
+ehthumbs.db
+Desktop.ini
