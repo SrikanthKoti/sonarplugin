@@ -10,7 +10,7 @@
 .project
 .settings/
 
-./node_modules
+.node_modules/
 # Eclipse-specific files
 /.metadata/
 /bin/
