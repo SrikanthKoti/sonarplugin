@@ -27,28 +27,43 @@ import org.sonar.api.measures.Metrics;
 import static java.util.Arrays.asList;
 
 public class CouplingMetrics implements Metrics {
-
-  public static final Metric<Integer> AFFERENT_COUPLING = new Metric.Builder("afferent_coupling", "Afferent Coupling", Metric.ValueType.INT)
+  private static final String DOMAIN = "Measuring Instability";
+  private static final String AFFERENT_COUPLING_KEY = "afferent_coupling";
+  private static final String EFFERENT_COUPLING_KEY = "efferent_coupling";
+  private static final String INSTABILITY_KEY = "instability";
+  private static final String INSTABILITY_RATING_KEY = "instability_rating";
+  
+  public static final Metric<Integer> AFFERENT_COUPLING = new Metric.Builder(AFFERENT_COUPLING_KEY, "Afferent Coupling", Metric.ValueType.INT)
   .setDescription("Number of dependents")
   .setDirection(Metric.DIRECTION_NONE)
   .setQualitative(false)
-  .setDomain(CoreMetrics.DOMAIN_COMPLEXITY)
+  .setDomain(CouplingMetrics.DOMAIN)
   .create();
 
-public static final Metric<Integer> EFFERENT_COUPLING = new Metric.Builder("efferent_coupling", "Efferent Coupling", Metric.ValueType.INT)
+  public static final Metric<Integer> EFFERENT_COUPLING = new Metric.Builder(EFFERENT_COUPLING_KEY, "Efferent Coupling", Metric.ValueType.INT)
   .setDescription("Number of dependencies")
   .setDirection(Metric.DIRECTION_NONE)
   .setQualitative(false)
-  .setDomain(CoreMetrics.DOMAIN_COMPLEXITY)
+  .setDomain(CouplingMetrics.DOMAIN)
   .create();
-public static final Metric<Integer> INSTABILITY = new Metric.Builder("instability", "Instability", Metric.ValueType.FLOAT)
-  .setDescription("Instability = Ca / (Ce + Ca)")
-  .setDirection(Metric.DIRECTION_BETTER)
+
+  public static final Metric<Double> INSTABILITY = new Metric.Builder(INSTABILITY_KEY, "Instability", Metric.ValueType.FLOAT)
+  .setDescription("Instability = ca / (ce + ca)")
+  .setDirection(Metric.DIRECTION_NONE)
   .setQualitative(false)
-  .setDomain(CoreMetrics.DOMAIN_COMPLEXITY)
+  .setDomain(CouplingMetrics.DOMAIN)
   .create();
+
+  public static final Metric<Integer> INSTABILITY_RATING = new Metric.Builder(INSTABILITY_RATING_KEY, "Instability Rating", Metric.ValueType.RATING)
+  .setDescription("Rating based on Instability of a file")
+  .setDirection(Metric.DIRECTION_BETTER)
+  .setQualitative(true)
+  .setDomain(CouplingMetrics.DOMAIN)
+  .create();
+
+
   @Override
   public List<Metric> getMetrics() {
-    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING);
+    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING);
   }
 }

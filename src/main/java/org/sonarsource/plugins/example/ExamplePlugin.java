@@ -38,6 +38,12 @@ import org.sonarsource.plugins.example.settings.HelloWorldProperties;
 import org.sonarsource.plugins.example.settings.SayHelloFromScanner;
 import org.sonarsource.plugins.example.web.MyPluginPageDefinition;
 
+import org.sonarsource.plugins.example.measures.coupling.CouplingMetrics;
+import org.sonarsource.plugins.example.measures.coupling.CouplingMetricSensor;
+import org.sonarsource.plugins.example.measures.coupling.ComputeCaSum;
+import org.sonarsource.plugins.example.measures.coupling.ComputeCeSum;
+import org.sonarsource.plugins.example.measures.coupling.ComputeInstabilityAverage;
+import org.sonarsource.plugins.example.measures.coupling.ComputeInstabilityRating;
 /**
  * This class is the entry point for all extensions. It is referenced in pom.xml.
  */
@@ -56,6 +62,9 @@ public class ExamplePlugin implements Plugin {
     // tutorial on measures
     context
       .addExtensions(ExampleMetrics.class, SetSizeOnFilesSensor.class, ComputeSizeAverage.class, ComputeSizeRating.class);
+
+    context
+      .addExtensions(CouplingMetrics.class, CouplingMetricSensor.class, ComputeCaSum.class, ComputeCeSum.class, ComputeInstabilityAverage.class, ComputeInstabilityRating.class);
 
     // tutorial on rules
     context.addExtensions(JavaRulesDefinition.class, CreateIssuesOnJavaFilesSensor.class);
