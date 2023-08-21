@@ -1,8 +1,11 @@
-SonarQube Custom Plugin Example [![Build Status](https://travis-ci.org/SonarSource/sonar-custom-plugin-example.svg?branch=7.x)](https://travis-ci.org/SonarSource/sonar-custom-plugin-example)
+SonarQube Coupling Metrics Plugin
 ==========
 
-An example SonarQube plugin compatible with SonarQube 10.x.
+This repo uses [sonar-custom-plugin-example](https://github.com/SonarSource/sonar-custom-plugin-example) as reference. This SonarQube plugin compatible with SonarQube 10.x.
 
+Walk-through
+--------
+1. [Project Structure](https://drive.google.com/file/d/1pAJFfiexAz0WXvFdXCw97FbZxoelAyuQ/view?usp=drive_link)
 Back-end
 --------
 
