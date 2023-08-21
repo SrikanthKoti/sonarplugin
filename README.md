@@ -6,6 +6,7 @@ This repo uses [sonar-custom-plugin-example](https://github.com/SonarSource/sona
 Walk-through
 --------
 1. [Project Structure](https://drive.google.com/file/d/1pAJFfiexAz0WXvFdXCw97FbZxoelAyuQ/view?usp=drive_link)
+
 Back-end
 --------
 
