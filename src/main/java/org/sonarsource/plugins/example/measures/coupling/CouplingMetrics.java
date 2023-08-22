@@ -32,6 +32,7 @@ public class CouplingMetrics implements Metrics {
   private static final String EFFERENT_COUPLING_KEY = "efferent_coupling";
   private static final String INSTABILITY_KEY = "instability";
   private static final String INSTABILITY_RATING_KEY = "instability_rating";
+  private static final String REPORT_KEY = "report";
   
   public static final Metric<Integer> AFFERENT_COUPLING = new Metric.Builder(AFFERENT_COUPLING_KEY, "Afferent Coupling", Metric.ValueType.INT)
   .setDescription("Number of dependents")
@@ -60,10 +61,17 @@ public class CouplingMetrics implements Metrics {
   .setQualitative(true)
   .setDomain(CouplingMetrics.DOMAIN)
   .create();
+  public static final Metric<String> REPORT = new Metric.Builder(REPORT_KEY, "Dependency-Check Report", Metric.ValueType.DATA)
+  .setDescription("Report HTML")
+  .setQualitative(Boolean.FALSE)
+  .setDomain(CouplingMetrics.DOMAIN)
+  .setHidden(false)
+  .setDeleteHistoricalData(true)
+  .create();
 
 
   @Override
   public List<Metric> getMetrics() {
-    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING);
+    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING, REPORT);
   }
 }

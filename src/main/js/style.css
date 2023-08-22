@@ -23,3 +23,7 @@
 .sanity-check {
   width: 400px
 }
+.dependency-check-report-container {
+  display: flex;
+  flex-direction: column;
+}

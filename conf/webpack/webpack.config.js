@@ -29,6 +29,8 @@ module.exports = {
     // Using Backbone JS:
     project_page: ["./src/main/js/project_page/index.js"],
 
+    html_report_page: ["./src/main/js/html_report_page/index.js"],
+
     // Using React:
     portfolio_page: ["./src/main/js/portfolio_page/index.js"],
     admin_page: ["./src/main/js/admin_page/index.js"]

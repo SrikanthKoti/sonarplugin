@@ -20,8 +20,8 @@
 package org.sonarsource.plugins.example.utils;
 
 public enum ReportFormat {
-    @Deprecated
     XML,
     HTML,
-    JSON
+    JSON,
+    SVG
 }

@@ -37,9 +37,12 @@ import org.sonarsource.plugins.example.utils.*;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.AFFERENT_COUPLING;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.INSTABILITY;
+import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.REPORT;
 import org.sonarsource.plugins.example.models.ModuleInfo;
 import org.sonar.api.notifications.AnalysisWarnings;
 import org.sonarsource.plugins.example.utils.Module;
+import org.sonarsource.plugins.example.utils.HtmlReportFile;
+
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -101,6 +104,21 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
     }
     return Optional.empty();
   }
+  private void uploadHTMLReport(SensorContext context) {
+    try {
+        HtmlReportFile htmlReportFile = HtmlReportFile.getHtmlReport(context.config(), fileSystem, pathResolver);
+        String htmlReport = htmlReportFile.getReportContent();
+        if (htmlReport != null) {
+            LOGGER.info("Upload Dependency-Check HTML-Report");
+            context.<String>newMeasure().forMetric(REPORT).on(context.project())
+                    .withValue(htmlReport).save();
+        }
+    } catch (FileNotFoundException e) {
+        LOGGER.info(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
+    }
+}
+
   @Override
   public void execute(SensorContext context) {
     FileSystem fs = context.fileSystem();
@@ -119,22 +137,22 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
       
       Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasType(InputFile.Type.MAIN));
       for (InputFile file : files) {
-        LOGGER.info("#-------------------------------------------#");
-        LOGGER.info(file.absolutePath());
-        LOGGER.info(file.relativePath());
-        LOGGER.info(file.filename());
+        // LOGGER.info("#-------------------------------------------#");
+        // LOGGER.info(file.absolutePath());
+        // LOGGER.info(file.relativePath());
+        // LOGGER.info(file.filename());
         Integer cAvalue = 0;
         Integer cEvalue = 0;
         Optional<Module> module =  findModuleDataBySource(jsonData.get().getModules(),file.relativePath());
         if(module.isPresent()){
           cAvalue = module.get().getDependents().size();
           cEvalue = module.get().getDependencies().size();
-          LOGGER.info("Dependents: " + cAvalue);
-          LOGGER.info("Dependencies: " + cAvalue);
-          LOGGER.info(module.get().toString());
+          // LOGGER.info("Dependents: " + cAvalue);
+          // LOGGER.info("Dependencies: " + cAvalue);
+          // LOGGER.info(module.get().toString());
         }
         else {
-          LOGGER.info("Dependents: " + "NOT_FOUND");
+          // LOGGER.info("Dependents: " + "NOT_FOUND");
 
         }
         context.<Integer>newMeasure()
@@ -156,9 +174,10 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
           .on(file)
           .withValue(instabilityValue)
           .save();
-          LOGGER.info("Instability: ", instabilityValue);
-          LOGGER.info("--                     **                  --");
+          // LOGGER.info("Instability: ", instabilityValue);
+          // LOGGER.info("--                     **                  --");
       }
+      uploadHTMLReport(context);
   } catch (Exception e) {
       e.printStackTrace();
   }
