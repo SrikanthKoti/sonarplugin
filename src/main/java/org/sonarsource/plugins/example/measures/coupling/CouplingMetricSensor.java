@@ -1,30 +1,6 @@
-/*
- * Example Plugin for SonarQube
- * Copyright (C) 2009-2020 SonarSource SA
- * mailto:contact AT sonarsource DOT com
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 package org.sonarsource.plugins.example.measures.coupling;
 
 import java.io.FileNotFoundException;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -39,7 +15,6 @@ import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.INSTABILITY;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.HTML_REPORT;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.SVG_REPORT;
-import org.sonarsource.plugins.example.models.ModuleInfo;
 import org.sonar.api.notifications.AnalysisWarnings;
 import org.sonarsource.plugins.example.utils.Module;
 import org.sonarsource.plugins.example.utils.HtmlReportFile;
@@ -50,8 +25,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonArray;
 import java.util.ArrayList;
 import org.sonar.api.scan.filesystem.PathResolver;
 import edu.umd.cs.findbugs.annotations.Nullable;
@@ -77,13 +50,7 @@ public class CouplingMetricSensor implements Sensor {
   }
   private static final Logger LOGGER = Loggers.get(CouplingMetricSensor.class);
 
-  
 
-public static Optional<ModuleInfo> findModuleBySource(List<ModuleInfo> moduleInfoList, String source) {
-  return moduleInfoList.stream()
-          .filter(moduleInfo -> moduleInfo.getSource().equals(source))
-          .findFirst();
-}
 public static Optional<Module> findModuleDataBySource(List<Module> moduleList, String source) {
   return moduleList.stream()
           .filter(module -> module.getSource().equals(source))
@@ -140,7 +107,6 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
     // only "main" files, but not "tests"   
     try {
       // Access the value of the custom parameter
-      // String jsonPath = context.config().get("sonar.dependencyJsonPath").orElse(null);
       Optional<Analysis> jsonData = parseAnalysis(context);
       LOGGER.info("************************");
       LOGGER.info(jsonData.toString());
@@ -152,23 +118,12 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
       
       Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasType(InputFile.Type.MAIN));
       for (InputFile file : files) {
-        // LOGGER.info("#-------------------------------------------#");
-        // LOGGER.info(file.absolutePath());
-        // LOGGER.info(file.relativePath());
-        // LOGGER.info(file.filename());
         Integer cAvalue = 0;
         Integer cEvalue = 0;
         Optional<Module> module =  findModuleDataBySource(jsonData.get().getModules(),file.relativePath());
         if(module.isPresent()){
           cAvalue = module.get().getDependents().size();
           cEvalue = module.get().getDependencies().size();
-          // LOGGER.info("Dependents: " + cAvalue);
-          // LOGGER.info("Dependencies: " + cAvalue);
-          // LOGGER.info(module.get().toString());
-        }
-        else {
-          // LOGGER.info("Dependents: " + "NOT_FOUND");
-
         }
         context.<Integer>newMeasure()
           .forMetric(AFFERENT_COUPLING)
@@ -189,8 +144,6 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
           .on(file)
           .withValue(instabilityValue)
           .save();
-          // LOGGER.info("Instability: ", instabilityValue);
-          // LOGGER.info("--                     **                  --");
       }
       uploadHTMLReport(context);
       uploadSvgReport(context);

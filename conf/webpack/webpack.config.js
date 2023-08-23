@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2009-2020 SonarSource SA
- * mailto:info AT sonarsource DOT com
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 const path = require("path");
 const autoprefixer = require("autoprefixer");
 
@@ -23,19 +5,11 @@ module.exports = {
   // Define the entry points here. They MUST have the same name as the page_id
   // defined in src/main/java/org/sonarsource/plugins/example/web/MyPluginPageDefinition.java
   entry: {
-    // Using Vanilla JS:
-    global_page: ["./src/main/js/global_page/index.js"],
-
-    // Using Backbone JS:
-    project_page: ["./src/main/js/project_page/index.js"],
-
+    
+    // Using React:
     html_report_page: ["./src/main/js/html_report_page/index.js"],
-
     svg_report_page: ["./src/main/js/svg_report_page/index.js"],
 
-    // Using React:
-    portfolio_page: ["./src/main/js/portfolio_page/index.js"],
-    admin_page: ["./src/main/js/admin_page/index.js"]
   },
   output: {
     // The entry point files MUST be shipped inside the final JAR's static/
