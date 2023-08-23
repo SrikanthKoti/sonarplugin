@@ -18,12 +18,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from "react";
-import DependencyCheckReportApp from "./components/DependencyCheckReportApp";
+import DependencyCheckReportApp from "../html_report_page/components/DependencyCheckReportApp";
 import "../style.css";
 
 // This creates a page for dependencycheck, which shows a html report
 
-//  You can access it at /project/extension/example/html_report_page?id={PORTFOLIO_ID}&qualifier=VW
-window.registerExtension("example/html_report_page", (options) => {
-  return <DependencyCheckReportApp options={options} reportType={"html_report"}/>;
+//  You can access it at /project/extension/example/svg_report_page?id={PORTFOLIO_ID}&qualifier=VW
+window.registerExtension("example/svg_report_page", (options) => {
+  return <DependencyCheckReportApp options={options} reportType={"svg_report"}/>;
 });

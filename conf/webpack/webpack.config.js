@@ -31,6 +31,8 @@ module.exports = {
 
     html_report_page: ["./src/main/js/html_report_page/index.js"],
 
+    svg_report_page: ["./src/main/js/svg_report_page/index.js"],
+
     // Using React:
     portfolio_page: ["./src/main/js/portfolio_page/index.js"],
     admin_page: ["./src/main/js/admin_page/index.js"]

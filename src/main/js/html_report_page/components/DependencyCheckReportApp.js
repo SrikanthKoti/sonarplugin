@@ -29,10 +29,10 @@ export function isPullRequest(branchLike) {
   return branchLike !== undefined && branchLike.key !== undefined;
 }
 
-export function findDependencyCheckReport(options) {
+export function findDependencyCheckReport(options, reportType) {
   var request = {
     component : options.component.key,
-    metricKeys : "report"
+    metricKeys : reportType
   };
 
   // branch and pullRequest are internal parameters for /api/measures/component
@@ -41,14 +41,13 @@ export function findDependencyCheckReport(options) {
   } else if (isPullRequest(options.branchLike)) {
     request.pullRequest = options.branchLike.key;
   }
-  // return findDependencyCheckReport
   return getJSON("/api/measures/component", request).then(function(response) {
     console.log(response);
     var report = response.component.measures.find((measure) => {
-      return measure.metric === "report";
+      return measure.metric === reportType;
     });
     if (typeof report  === "undefined") {
-      return "<center><h2>No HTML-Report found. Please check property sonar.dependencyHtmlPath</h2></center>";
+      return `<center><h2>No ${reportType === "html_report" ? "HTML" : "SVG"}-Report found. Please check property ${reportType === "html_report" ? "sonar.dependencyHtmlPath" : "sonar.dependencySvgPath"}</h2></center>`;
     } else {
       return report.value;
     }
@@ -69,7 +68,7 @@ export default class DependencyCheckReportApp extends React.PureComponent {
   componentDidMount() {
     
     // eslint-disable-next-line react/prop-types
-    findDependencyCheckReport(this.props.options).then((data) => {
+    findDependencyCheckReport(this.props.options, this.props.reportType).then((data) => {
       this.setState({
         loading: false,
         data

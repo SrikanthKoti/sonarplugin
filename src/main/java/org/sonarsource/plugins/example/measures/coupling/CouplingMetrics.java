@@ -32,7 +32,8 @@ public class CouplingMetrics implements Metrics {
   private static final String EFFERENT_COUPLING_KEY = "efferent_coupling";
   private static final String INSTABILITY_KEY = "instability";
   private static final String INSTABILITY_RATING_KEY = "instability_rating";
-  private static final String REPORT_KEY = "report";
+  private static final String HTML_REPORT_KEY = "html_report";
+  private static final String SVG_REPORT_KEY = "svg_report";
   
   public static final Metric<Integer> AFFERENT_COUPLING = new Metric.Builder(AFFERENT_COUPLING_KEY, "Afferent Coupling", Metric.ValueType.INT)
   .setDescription("Number of dependents")
@@ -61,7 +62,8 @@ public class CouplingMetrics implements Metrics {
   .setQualitative(true)
   .setDomain(CouplingMetrics.DOMAIN)
   .create();
-  public static final Metric<String> REPORT = new Metric.Builder(REPORT_KEY, "Dependency-Check Report", Metric.ValueType.DATA)
+  
+  public static final Metric<String> HTML_REPORT = new Metric.Builder(HTML_REPORT_KEY, "Dependency-Check HTML Report", Metric.ValueType.DATA)
   .setDescription("Report HTML")
   .setQualitative(Boolean.FALSE)
   .setDomain(CouplingMetrics.DOMAIN)
@@ -69,9 +71,16 @@ public class CouplingMetrics implements Metrics {
   .setDeleteHistoricalData(true)
   .create();
 
+  public static final Metric<String>  SVG_REPORT = new Metric.Builder(SVG_REPORT_KEY, "Dependency-Check SVG Report", Metric.ValueType.DATA)
+  .setDescription("Report SVG")
+  .setQualitative(Boolean.FALSE)
+  .setDomain(CouplingMetrics.DOMAIN)
+  .setHidden(false)
+  .setDeleteHistoricalData(true)
+  .create();
 
   @Override
   public List<Metric> getMetrics() {
-    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING, REPORT);
+    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING, HTML_REPORT, SVG_REPORT);
   }
 }

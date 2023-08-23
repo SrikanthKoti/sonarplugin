@@ -37,7 +37,8 @@ import org.sonarsource.plugins.example.utils.*;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.AFFERENT_COUPLING;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
 import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.INSTABILITY;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.REPORT;
+import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.HTML_REPORT;
+import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.SVG_REPORT;
 import org.sonarsource.plugins.example.models.ModuleInfo;
 import org.sonar.api.notifications.AnalysisWarnings;
 import org.sonarsource.plugins.example.utils.Module;
@@ -110,7 +111,7 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
         String htmlReport = htmlReportFile.getReportContent();
         if (htmlReport != null) {
             LOGGER.info("Upload Dependency-Check HTML-Report");
-            context.<String>newMeasure().forMetric(REPORT).on(context.project())
+            context.<String>newMeasure().forMetric(HTML_REPORT).on(context.project())
                     .withValue(htmlReport).save();
         }
     } catch (FileNotFoundException e) {
@@ -118,6 +119,20 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
         LOGGER.debug(e.getMessage(), e);
     }
 }
+  private void uploadSvgReport(SensorContext context) {
+    try {
+        SvgReportFile svgReportFile = SvgReportFile.getSvgReport(context.config(), fileSystem, pathResolver);
+        String svgReport = svgReportFile.getReportContent();
+        if (svgReport != null) {
+            LOGGER.info("Upload Dependency-Check SVG-Report");
+            context.<String>newMeasure().forMetric(SVG_REPORT).on(context.project())
+                    .withValue(svgReport).save();
+        }
+    } catch (FileNotFoundException e) {
+        LOGGER.info(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
+    }
+  }
 
   @Override
   public void execute(SensorContext context) {
@@ -178,6 +193,7 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
           // LOGGER.info("--                     **                  --");
       }
       uploadHTMLReport(context);
+      uploadSvgReport(context);
   } catch (Exception e) {
       e.printStackTrace();
   }
