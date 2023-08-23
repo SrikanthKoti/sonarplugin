@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.hooks;
+package org.sonarsource.plugins.coupling.hooks;
 
 import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
 import org.sonar.api.ce.posttask.QualityGate;

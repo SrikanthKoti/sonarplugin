@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.measures.coupling;
+package org.sonarsource.plugins.coupling.measures.coupling;
 
 import java.io.FileNotFoundException;
 
@@ -9,15 +9,15 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import org.sonarsource.plugins.example.utils.*;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.AFFERENT_COUPLING;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.INSTABILITY;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.HTML_REPORT;
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.SVG_REPORT;
+import org.sonarsource.plugins.coupling.utils.*;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.AFFERENT_COUPLING;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.INSTABILITY;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.HTML_REPORT;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.SVG_REPORT;
 import org.sonar.api.notifications.AnalysisWarnings;
-import org.sonarsource.plugins.example.utils.Module;
-import org.sonarsource.plugins.example.utils.HtmlReportFile;
+import org.sonarsource.plugins.coupling.utils.Module;
+import org.sonarsource.plugins.coupling.utils.HtmlReportFile;
 
 
 import java.io.FileReader;

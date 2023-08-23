@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.measures.coupling;
+package org.sonarsource.plugins.coupling.measures.coupling;
 
 import java.util.List;
 import org.sonar.api.measures.CoreMetrics;

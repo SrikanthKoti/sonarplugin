@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.web;
+package org.sonarsource.plugins.coupling.web;
 
 import org.sonar.api.web.page.Context;
 import org.sonar.api.web.page.Page;
@@ -15,12 +15,12 @@ public class MyPluginPageDefinition implements PageDefinition {
   @Override
   public void define(Context context) {
     context
-      .addPage(Page.builder("example/html_report_page")
+      .addPage(Page.builder("coupling/html_report_page")
         .setScope(COMPONENT)
         .setComponentQualifiers(Page.Qualifier.PROJECT, Page.Qualifier.MODULE)
         .setName("Coupling Report: HTML")
         .setAdmin(false).build())
-      .addPage(Page.builder("example/svg_report_page")
+      .addPage(Page.builder("coupling/svg_report_page")
         .setScope(COMPONENT)
         .setComponentQualifiers(Page.Qualifier.PROJECT, Page.Qualifier.MODULE)
         .setName("Coupling Report: SVG")

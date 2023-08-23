@@ -20,7 +20,7 @@ To build the plugin JAR file, call:
 mvn clean package
 ```
 
-The JAR will be deployed to `target/sonar-example-plugin-VERSION.jar`. Copy this to your SonarQube's `extensions/plugins/` directory, and re-start SonarQube.
+The JAR will be deployed to `target/sonar-coupling-plugin-VERSION.jar`. Copy this to your SonarQube's `extensions/plugins/` directory, and re-start SonarQube.
 
 Front-end
 ---------

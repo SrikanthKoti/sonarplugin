@@ -17,11 +17,20 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonarsource.plugins.example.utils;
+package org.sonarsource.plugins.coupling.utils;
 
-public enum ReportFormat {
-    XML,
-    HTML,
-    JSON,
-    SVG
+public class ReportParserException extends Exception {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    public ReportParserException(String msg) {
+        super(msg);
+    }
+    
+    public ReportParserException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

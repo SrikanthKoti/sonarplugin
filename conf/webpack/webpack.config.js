@@ -3,7 +3,7 @@ const autoprefixer = require("autoprefixer");
 
 module.exports = {
   // Define the entry points here. They MUST have the same name as the page_id
-  // defined in src/main/java/org/sonarsource/plugins/example/web/MyPluginPageDefinition.java
+  // defined in src/main/java/org/sonarsource/plugins/coupling/web/MyPluginPageDefinition.java
   entry: {
     
     // Using React:

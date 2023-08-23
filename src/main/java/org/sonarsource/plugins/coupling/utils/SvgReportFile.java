@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.utils;
+package org.sonarsource.plugins.coupling.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

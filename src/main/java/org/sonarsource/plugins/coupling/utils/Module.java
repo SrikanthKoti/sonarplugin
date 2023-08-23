@@ -1,4 +1,4 @@
-package org.sonarsource.plugins.example.utils;
+package org.sonarsource.plugins.coupling.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

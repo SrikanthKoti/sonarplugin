@@ -1,10 +1,10 @@
-package org.sonarsource.plugins.example.measures.coupling;
+package org.sonarsource.plugins.coupling.measures.coupling;
 
 import org.sonar.api.ce.measure.Component;
 import org.sonar.api.ce.measure.Measure;
 import org.sonar.api.ce.measure.MeasureComputer;
 
-import static org.sonarsource.plugins.example.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
 
 public class ComputeCeSum implements MeasureComputer {
 
