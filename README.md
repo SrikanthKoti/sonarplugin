@@ -1,91 +1,116 @@
-SonarQube Coupling Metrics Plugin
-==========
+# Coupling Metrics Plugin for SonarQube 10.x.
 
-This repo uses [sonar-custom-plugin-example](https://github.com/SonarSource/sonar-custom-plugin-example) as reference. This SonarQube plugin compatible with SonarQube 10.x.
+
+Integrates [Dependency-Cruiser][] reports into SonarQube v10.x or higher.
+
+## About Dependency-Cruiser
+
+Dependency-Cruiser is an npm package that can validate and visualise dependencies. This runs through the dependencies in any JavaScript, TypeScript, LiveScript or CoffeeScript project and ...
+- ... **validates** them against (your own) [rules](https://github.com/sverweij/dependency-cruiser/blob/main/doc/rules-reference.md)
+- ... **reports** violated rules
+  - in text (for your builds)
+  - in graphics (for your eyeballs)
 
 Walk-through
 --------
 1. [Project Structure](https://drive.google.com/file/d/1pAJFfiexAz0WXvFdXCw97FbZxoelAyuQ/view?usp=drive_link)
+2. [Code Read]
+3. [Plugin setup in existing pipeline]
 
-Back-end
---------
+## Note
 
-Todo...
+**This SonarQube plugin does not perform analysis**, rather, it reads existing Dependency-Cruiser reports. 
+- **JSON** report is used to analize the Afferent coupling, Efferent Couplung & Instability of each file in the project. 
+- **HTML** & **SVG** reports are optional, when provided it will add 2 project level web extentions that show these HTML & SVG reports respectively
 
-### Building
+Use [this](https://levelup.gitconnected.com/brief-introduction-of-dependency-cruiser-7e38a41afa4f) blog to know more about how to generate these reports.
 
-To build the plugin JAR file, call:
+## Metrics
 
+The plugin keeps track of a number of statistics including:
+
+-   Afferent Coupling (Ca)
+    - The number of classes outside the package that depend on classes within the module.
+-   Efferent Coupling (Ce)
+    - The number of classes outside the package that are depended upon by classes within the module.
+-   Instability (I)
+    - A metric that quantifies the balance between incoming and outgoing dependencies of a package.
+    ```
+    I = Ce / (Ca + Ce)
+    ```
+    - Where 0 ≤ I ≤ 1
+
+Additionally, the following two metrics are defined:
+
+### Instability Rating
+
+Shows rating for each file based on the Instablity value. You can also add this to the Quality Gates of your project along with coverage, bugs etc.. Below is how sonar shows the rating.
+
+```java
+A -> 0 to 0.4
+B -> 0.4 to 0.7
+C -> 0.7 to 1
 ```
-mvn clean package
-```
 
-The JAR will be deployed to `target/sonar-coupling-plugin-VERSION.jar`. Copy this to your SonarQube's `extensions/plugins/` directory, and re-start SonarQube.
+## Compiling
 
-Front-end
----------
+> $ mvn clean package
 
-This plugin registers 4 extension pages in the SonarQube web app. They demonstrate how you can extend SonarQube's UI with new pages and interfaces.
+### Working with NodeJS
 
-### Prerequisites
+-   Start SonarQube Server
+-   Run `npm start` inside `sonar-dependency-check-plugin`
+    -   Adjust `DEFAULT_PORT`, `PROXY_URL`, `PROXY_CONTEXT_PATH` for your environment
 
-* [NodeJS](https://nodejs.org/en/)
+## Installation
 
-### Scripts
+Copy the plugin (jar file) to $SONAR_INSTALL_DIR/extensions/plugins and restart SonarQube or install via SonarQube Marketplace(Not published yet).
 
-* `npm install` to install your dependencies.
-* `npm start` to start a proxy server on port 3000 to debug your JS code.  
-  *Note: This plugin must first be deployed and installed on your SonarQube instance, otherwise the extension paths will not be registered. See above under Back-end > Building*  
-  This will proxy to a running SonarQube instance, but allow you to use your own local JavaScript instead of what was bundled with your plugin. Once started, you can access `http://localhost:3000` in your browser, and use SonarQube as you normally would.  
-  You can use a different port by using the `PORT` environment variable. Example:  
-  ```
-  PORT=6060 npm start
-  ```
-  You can control to which SonarQube instance you proxy to by setting the `PROXY_URL` environment variable to any valid URL (defaults to `http://localhost:9000`). Example:  
-  ```
-  PROXY_URL=https://sonarqube.example.com npm start
-  ```
-* `npm test` to start watching your files for changes, and run tests accordingly.
-* `npm run build` to build your front-end code.  
-  Usually, you will not need to call this; instead, this should be part of your package building process.  
-  See Back-end > Building above.
+## How to use this plugin to pur existing bitbucket pipeline
+### Step 1: Adding a script to generate dependency graph reports
+- Install dependency-cruiser in dev dependencies `npm i -D dependency-cruiser`
+- Add this `generate-dependency-graph.sh` to your functions folder, this script generated a JSON,HTml & SVG reports & saves it in the functions folder.
+    ```
+    #!/bin/bash
+    
+    # Store the current directory
+    CURRENT_DIR=$(pwd)
+    
+    
+    # Use locally installed depcruise package
+    DEPCRUISE_PATH=$(npm bin)/depcruise
+    
+    # Navigate to the project directory
+    cd ..
+    
+    # Run the commands in the project directory
+    echo "Running commands in the can-engage directory"
+    $DEPCRUISE_PATH --exclude "node_modules" --no-config --output-type dot functions | dot -T svg > functions/dependencies.svg
+    $DEPCRUISE_PATH --exclude 'node_modules' --output-type html functions > functions/dependencies.html --metrics --no-config
+    $DEPCRUISE_PATH --exclude 'node_modules' --output-type json functions > functions/dependencies.json --no-config --metrics
+    
+    echo "Commands completed."
+    
+    # Return to the functions directory
+    cd functions
+    
+    ```
+- Add this as a script in functions/package.json `"dependencygraph:generate": "./generate-dependency-graph.sh"`
 
-### Building
+### Step 2: Modifying the bitbucket pipeline.
+- under `script`, add `apt install graphviz -y` command to install graphviz. It's needed to generate SVG reports.
+- under `artifacts` add `functions/*` to add the generated reports in the functions folder as artifacts.
+- add below 3 command line parrams to the sonnar-scanner script
+    - `-Dsonar.dependencyJsonPath=functions/dependencies.json`
+    - `-Dsonar.dependencyHtmlPath=functions/dependencies.html`
+    - `-Dsonar.dependencySvgPath=functions/dependencies.svg`
 
-This example plugin uses [Webpack](https://webpack.js.org/) for building the final JavaScript. Whatever build system you choose to use, the final result *MUST* adhere to the following rules:
+## Note
+If you an error for java heep memory issue then you need to add size and memory to the sonar analysis.
+Under the sonar analysis step, give `size: 1x` & under docker give `memory: 2048`
 
-* 1 entry file *per extension page*.
-* The name of each entry file must correspond to the `page_id` of the registered page (see `src/main/java/org/sonarsource/plugins/example/web/MyPluginPageDefinition.java` and compare with the entry points in `conf/webpack/webpack.config.js`).
-* Each entry file must be located in the resulting JAR's `static/` folder.
+For reference you can check out [db-diagram](https://bitbucket.org/peoppl_co/db-diagram/src/sonarPluginTest/bitbucket-pipelines.yml) repo.
 
-The building process should be included in your full packaging process. In this example plugin, `mvn package` will call `npm run build` prior to finalizing the JAR package.
 
-### Testing
-
-This project uses [Jest](https://jestjs.io/) for testing. Running `npm test` will run Jest in `--watch` mode. You can find the configuration for Jest in `package.json`.
-
-### How to use these files
-
-It is recommended you check out the sources in `src/main/js/` directly. The code is well commented, and provides real-world examples on how to interact with SonarQube.
-
-The pages are registered in `src/main/java/org/sonarsource/plugins/example/web/MyPluginPageDefinition.java`, and their respective front-end source code is located in `src/main/js/`. These examples use different stacks to demonstrate different possibilities:
-
-* React JS examples (recommended, SonarQube uses React 16):
-  * `src/main/js/portfolio_page/`
-  * `src/main/js/admin_page/`
-* Backbone JS example: `src/main/js/project_page/`
-* Vanilla JS example: `src/main/js/global_page/`
-
-#### Helper APIs exposed by SonarQube
-
-There are several helper APIs exposed by SonarQube, like functions to make authenticated API requests.
-
-You can find the full list of exposed helpers [here](https://github.com/SonarSource/sonarqube/blob/master/server/sonar-web/src/main/js/app/components/extensions/exposeLibraries.ts).
-
-The included pages contain several examples:
-
-* **API calls (`window.SonarRequest`)**  
-  Check `src/main/js/common/api.js` for some examples.
-
-* **Localization (`window.t()` and `window.tp()`)**  
-  Localizable UI strings are defined in `src/main/resources/org/sonar/l10n/example/`. They are loaded at startup time, and can used by the global `t()` and `tp()` functions. See `src/main/js/admin_page/components/InstanceStatisticsApp.js` and `src/main/js/portfolio_page/components/VersionsMeasuresHistoryApp.js` for some examples. 
+[dependency-cruiser]: https://www.npmjs.com/package/dependency-cruiser
+[sonar-custom-plugin-example]: https://github.com/SonarSource/sonar-custom-plugin-example
