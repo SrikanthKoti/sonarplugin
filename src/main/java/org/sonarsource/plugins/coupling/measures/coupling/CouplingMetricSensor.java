@@ -137,7 +137,7 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
           .save();
         Double instabilityValue = 0.0;
           if(cAvalue != 0 || cEvalue != 0){
-            instabilityValue = cAvalue.doubleValue() / (cAvalue.doubleValue() + cEvalue.doubleValue());
+            instabilityValue = cEvalue.doubleValue() / (cAvalue.doubleValue() + cEvalue.doubleValue());
           }
           context.<Double>newMeasure()
           .forMetric(INSTABILITY)
