@@ -6,6 +6,7 @@ Integrates [Dependency-Cruiser][] reports into SonarQube v10.x or higher.
 ## About Dependency-Cruiser
 
 Dependency-Cruiser is an npm package that can validate and visualise dependencies. This runs through the dependencies in any JavaScript, TypeScript, LiveScript or CoffeeScript project and ...
+
 - ... **validates** them against (your own) [rules](https://github.com/sverweij/dependency-cruiser/blob/main/doc/rules-reference.md)
 - ... **reports** violated rules
   - in text (for your builds)
@@ -29,16 +30,26 @@ Use [this](https://levelup.gitconnected.com/brief-introduction-of-dependency-cru
 
 The plugin keeps track of a number of statistics including:
 
--   Afferent Coupling (Ca)
-    - The number of classes outside the package that depend on classes within the module.
--   Efferent Coupling (Ce)
-    - The number of classes outside the package that are depended upon by classes within the module.
--   Instability (I)
-    - A metric that quantifies the balance between incoming and outgoing dependencies of a package.
-    ```
-    I = Ce / (Ca + Ce)
-    ```
-    - Where 0 ≤ I ≤ 1
+- **Afferent Coupling (Ca)**
+    - Number of incoming dependencies, i.e.. number of other modules that depend on a particular class/module.
+    - Basically, Ca counts how many external entities reference or use a given module.
+    - High Afferent Coupling is Bad. While it’s not inherently bad, it can lead to challenges in understanding and maintaining the code, especially if changes to the module impact many other parts of the system.
+
+- **Efferent Coupling (Ce)**
+    - Number of outgoing dependencies. i.e.. number of other modules or classes that a particular module or class depends on.
+    - Ce quantifies how many external entities are used or referenced by the module being measured
+    - High efferent coupling can indicate that a module is highly dependent on external functionality, potentially making it less independent and more tightly coupled with other parts of the system. This can lead to challenges when making changes to the module or when trying to reuse it in other contexts.
+
+- **Instability (I)**
+    - It is a software design metric that measures the balance between Afferent Coupling (Ca) and Efferent Coupling (Ce) for a module or class.
+
+        ```
+        I = Ce / (Ca + Ce) 
+        Where 0 ≤ I ≤ 1    
+        ```
+    - High Instability (Unstable): When I is close to 1, the module is unstable and prone to changes. It suggests that the module depends heavily on external entities, making it less reliable and more susceptible to changes in its dependencies.
+    - The goal is to achieve a balance between incoming and outgoing dependencies, leading to a more stable module (lower I value).
+    - Aim to reduce Ce more significantly than Ca, as this will directly decrease the numerator of the instability metric (I).
 
 Additionally, the following two metrics are defined:
 
