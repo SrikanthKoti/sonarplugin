@@ -112,9 +112,9 @@ Copy the plugin (jar file) to $SONAR_INSTALL_DIR/extensions/plugins and restart 
 - under `script`, add `apt install graphviz -y` command to install graphviz. It's needed to generate SVG reports.
 - under `artifacts` add `functions/*` to add the generated reports in the functions folder as artifacts.
 - add below 3 command line parrams to the sonnar-scanner script
-    - `-Dsonar.dependencyJsonPath=functions/dependencies.json`
-    - `-Dsonar.dependencyHtmlPath=functions/dependencies.html`
-    - `-Dsonar.dependencySvgPath=functions/dependencies.svg`
+    - `-Dsonar.couplingPlugin.jsonReportPath=functions/dependencies.json`
+    - `-Dsonar.couplingPlugin.htmlReportPath=functions/dependencies.html`
+    - `-Dsonar.couplingPlugin.svgReportPath=functions/dependencies.svg`
 
 ## Note
 If you an error for java heep memory issue then you need to add size and memory to the sonar analysis.
