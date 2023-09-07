@@ -1,6 +1,6 @@
-const webpack = require('webpack');
 const config = require('./webpack.config');
 const getClientEnvironment = require('../env');
+const { merge } = require('webpack-merge');
 
 // Get environment variables to inject into our app.
 const env = getClientEnvironment();
@@ -11,41 +11,50 @@ if (env['process.env.NODE_ENV'] !== '"production"') {
   throw new Error('Production builds must have NODE_ENV=production.');
 }
 
-const noUglify = process.argv.some(arg => arg.indexOf('--no-uglify') > -1);
+// const noUglify = process.argv.some(arg => arg.indexOf('--no-uglify') > -1);
 
-// Don't attempt to continue if there are any errors.
-config.bail = true;
+// // Don't attempt to continue if there are any errors.
+// config.bail = true;
 
-config.plugins = [
-  // Makes some environment variables available to the JS code, for example:
-  // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
-  // It is absolutely essential that NODE_ENV was set to production here.
-  // Otherwise React will be compiled in the very slow development mode.
-  new webpack.DefinePlugin(env),
+// config.plugins = [
+//   // Makes some environment variables available to the JS code, for example:
+//   // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
+//   // It is absolutely essential that NODE_ENV was set to production here.
+//   // Otherwise React will be compiled in the very slow development mode.
+//   new webpack.DefinePlugin(env),
 
-  // This helps ensure the builds are consistent if source hasn't changed:
-  new webpack.optimize.OccurrenceOrderPlugin(),
+//   // This helps ensure the builds are consistent if source hasn't changed:
+//   new webpack.optimize.OccurrenceOrderPlugin(),
 
-  // Try to dedupe duplicated modules, if any:
-  new webpack.optimize.DedupePlugin()
-];
+//   // Try to dedupe duplicated modules, if any:
+//   new webpack.optimize.DedupePlugin()
+// ];
 
-if (!noUglify) {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      }
-    })
-  );
-}
+// if (!noUglify) {
+//   config.plugins.push(
+//     new webpack.optimize.UglifyJsPlugin({
+//       compress: {
+//         screw_ie8: true, // React doesn't support IE8
+//         warnings: false
+//       },
+//       mangle: {
+//         screw_ie8: true
+//       },
+//       output: {
+//         comments: false,
+//         screw_ie8: true
+//       }
+//     })
+//   );
+// }
 
-module.exports = config;
+// module.exports = config;
+
+module.exports = merge(config, {
+  mode: 'production',
+  // Don't attempt to continue if there are any errors.
+  bail: true,
+  optimization: {
+    minimize: true
+  },
+});

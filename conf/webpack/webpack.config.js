@@ -5,11 +5,11 @@ module.exports = {
   // Define the entry points here. They MUST have the same name as the page_id
   // defined in src/main/java/org/sonarsource/plugins/coupling/web/MyPluginPageDefinition.java
   entry: {
-    
+
     // Using React:
     html_report_page: ["./src/main/js/html_report_page/index.js"],
     svg_report_page: ["./src/main/js/svg_report_page/index.js"],
-
+    bubble_chart_page: ["./src/main/js/bubble_chart_page/index.js"],
   },
   output: {
     // The entry point files MUST be shipped inside the final JAR's static/
@@ -18,7 +18,10 @@ module.exports = {
     filename: "[name].js"
   },
   resolve: {
-    root: path.join(__dirname, "src/main/js")
+    modules: [
+      path.join(__dirname, "src/main/js"),
+      "node_modules"
+    ]
   },
   externals: {
     // React 16.8 ships with SonarQube, and should be re-used to avoid 
@@ -32,30 +35,57 @@ module.exports = {
   },
   module: {
     // Our example uses Babel to transpile our code.
-    loaders: [
+    // loaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: "babel",
+    //     exclude: /(node_modules)/
+    //   },
+    //   {
+    //     test: /\.css/,
+    //     loader: "style-loader!css-loader!postcss-loader"
+    //   },
+    //   { test: /\.json$/, loader: "json" }
+    // ],
+    rules: [
       {
         test: /\.js$/,
-        loader: "babel",
-        exclude: /(node_modules)/
+        use: [
+          "babel-loader",
+        ],
+        exclude: /(node_modules|bower_components)/,
       },
       {
         test: /\.css/,
-        loader: "style-loader!css-loader!postcss-loader"
-      },
-      { test: /\.json$/, loader: "json" }
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                ident: 'postcss',
+                plugins: [
+                  require('autoprefixer'),
+                ]
+              },
+            }
+          }
+        ],
+      }
     ]
   },
-  postcss() {
-    return [
-      autoprefixer({
-        browsers: [
-          "last 3 Chrome versions",
-          "last 3 Firefox versions",
-          "last 3 Safari versions",
-          "last 3 Edge versions",
-          "IE 11"
-        ]
-      })
-    ];
-  }
+  // postcss() {
+  //   return [
+  //     autoprefixer({
+  //       browsers: [
+  //         "last 3 Chrome versions",
+  //         "last 3 Firefox versions",
+  //         "last 3 Safari versions",
+  //         "last 3 Edge versions",
+  //         "IE 11"
+  //       ]
+  //     })
+  //   ];
+  // }
 };

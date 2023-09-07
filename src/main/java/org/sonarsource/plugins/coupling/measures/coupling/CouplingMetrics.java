@@ -15,6 +15,7 @@ public class CouplingMetrics implements Metrics {
   private static final String INSTABILITY_RATING_KEY = "instability_rating";
   private static final String HTML_REPORT_KEY = "html_report";
   private static final String SVG_REPORT_KEY = "svg_report";
+  private static final String JSON_REPORT_KEY = "json_report";
   
   public static final Metric<Integer> AFFERENT_COUPLING = new Metric.Builder(AFFERENT_COUPLING_KEY, "Afferent Coupling", Metric.ValueType.INT)
   .setDescription("Number of dependents")
@@ -60,8 +61,16 @@ public class CouplingMetrics implements Metrics {
   .setDeleteHistoricalData(true)
   .create();
 
+  public static final Metric<String>  JSON_REPORT = new Metric.Builder(JSON_REPORT_KEY, "Dependency-Check JSON Report", Metric.ValueType.DATA)
+  .setDescription("Report JSON")
+  .setQualitative(Boolean.FALSE)
+  .setDomain(CouplingMetrics.DOMAIN)
+  .setHidden(false)
+  .setDeleteHistoricalData(true)
+  .create();
+
   @Override
   public List<Metric> getMetrics() {
-    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING, HTML_REPORT, SVG_REPORT);
+    return asList(AFFERENT_COUPLING, EFFERENT_COUPLING, INSTABILITY, INSTABILITY_RATING, HTML_REPORT, SVG_REPORT, JSON_REPORT);
   }
 }

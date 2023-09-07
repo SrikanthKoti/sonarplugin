@@ -24,6 +24,11 @@ public class MyPluginPageDefinition implements PageDefinition {
         .setScope(COMPONENT)
         .setComponentQualifiers(Page.Qualifier.PROJECT, Page.Qualifier.MODULE)
         .setName("Coupling Report: SVG")
+        .setAdmin(false).build())
+      .addPage(Page.builder("coupling/bubble_chart_page")
+        .setScope(COMPONENT)
+        .setComponentQualifiers(Page.Qualifier.PROJECT, Page.Qualifier.MODULE)
+        .setName("Coupling Report: Bubble Graph")
         .setAdmin(false).build());
   }
 }

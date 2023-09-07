@@ -15,6 +15,7 @@ import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics
 import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.INSTABILITY;
 import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.HTML_REPORT;
 import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.SVG_REPORT;
+import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.JSON_REPORT;
 import org.sonar.api.notifications.AnalysisWarnings;
 import org.sonarsource.plugins.coupling.utils.Module;
 import org.sonarsource.plugins.coupling.utils.HtmlReportFile;
@@ -100,7 +101,20 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
         LOGGER.debug(e.getMessage(), e);
     }
   }
-
+  private void uploadJsonReport(SensorContext context) {
+    try {
+        JsonReportFile jsonReportFile = JsonReportFile.getJsonReport(context.config(), fileSystem, pathResolver);
+        String jsonReport = jsonReportFile.getReportContent();
+        if (jsonReport != null) {
+            LOGGER.info("Upload Dependency-Check JSON-Report");
+            context.<String>newMeasure().forMetric(JSON_REPORT).on(context.project())
+                    .withValue(jsonReport).save();
+        }
+    } catch (FileNotFoundException e) {
+        LOGGER.info(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
+    }
+  }
   @Override
   public void execute(SensorContext context) {
     FileSystem fs = context.fileSystem();
@@ -147,6 +161,7 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
       }
       uploadHTMLReport(context);
       uploadSvgReport(context);
+      uploadJsonReport(context);
   } catch (Exception e) {
       e.printStackTrace();
   }

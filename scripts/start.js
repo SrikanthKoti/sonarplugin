@@ -15,6 +15,7 @@ const clearConsole = require('react-dev-utils/clearConsole');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const prompt = require('react-dev-utils/prompt');
 const config = require('../conf/webpack/webpack.config.dev.js');
+// const { prompt, clearConsole, formatWebpackMessages } = require('react-dev-utils');
 
 // Tools like Cloud9 rely on this.
 const DEFAULT_PORT = process.env.PORT || 3000;
@@ -87,22 +88,22 @@ function setupCompiler(host, port, protocol) {
 // We need to provide a custom onError function for httpProxyMiddleware.
 // It allows us to log custom error messages on the console.
 function onProxyError(proxy) {
-  return function(err, req, res) {
+  return function (err, req, res) {
     const host = req.headers && req.headers.host;
     console.log(
       chalk.red('Proxy error:') +
-        ' Could not proxy request ' +
-        chalk.cyan(req.url) +
-        ' from ' +
-        chalk.cyan(host) +
-        ' to ' +
-        chalk.cyan(proxy) +
-        '.'
+      ' Could not proxy request ' +
+      chalk.cyan(req.url) +
+      ' from ' +
+      chalk.cyan(host) +
+      ' to ' +
+      chalk.cyan(proxy) +
+      '.'
     );
     console.log(
       'See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (' +
-        chalk.cyan(err.code) +
-        ').'
+      chalk.cyan(err.code) +
+      ').'
     );
     console.log();
 
@@ -113,14 +114,14 @@ function onProxyError(proxy) {
     }
     res.end(
       'Proxy error: Could not proxy request ' +
-        req.url +
-        ' from ' +
-        host +
-        ' to ' +
-        proxy +
-        ' (' +
-        err.code +
-        ').'
+      req.url +
+      ' from ' +
+      host +
+      ' to ' +
+      proxy +
+      ' (' +
+      err.code +
+      ').'
     );
   };
 }
@@ -162,33 +163,35 @@ function addMiddleware(devServer) {
 }
 
 function runDevServer(host, port, protocol) {
-  const devServer = new WebpackDevServer(compiler, {
-    // Enable gzip compression of generated files.
-    compress: true,
-    // Silence WebpackDevServer's own logs since they're generally not useful.
-    // It will still show compile warnings and errors with this setting.
-    clientLogLevel: 'none',
-    // Enable hot reloading server. It will provide /sockjs-node/ endpoint
-    // for the WebpackDevServer client so it can learn when the files were
-    // updated. The WebpackDevServer client is included as an entry point
-    // in the Webpack development configuration. Note that only changes
-    // to CSS are currently hot reloaded. JS changes will refresh the browser.
-    hot: true,
-    // It is important to tell WebpackDevServer to use the same "root" path
-    // as we specified in the config. In development, we always serve from /.
-    publicPath: config.output.publicPath,
-    // WebpackDevServer is noisy by default so we emit custom message instead
-    // by listening to the compiler events with `compiler.plugin` calls above.
-    quiet: true,
-    // Reportedly, this avoids CPU overload on some systems.
-    // https://github.com/facebookincubator/create-react-app/issues/293
-    watchOptions: {
-      ignored: /node_modules/
-    },
-    // Enable HTTPS if the HTTPS environment variable is set to 'true'
-    https: protocol === 'https',
-    host
-  });
+  const devServer = new WebpackDevServer(
+    {
+      // Enable gzip compression of generated files.
+      compress: true,
+      // Silence WebpackDevServer's own logs since they're generally not useful.
+      // It will still show compile warnings and errors with this setting.
+      clientLogLevel: 'none',
+      // Enable hot reloading server. It will provide /sockjs-node/ endpoint
+      // for the WebpackDevServer client so it can learn when the files were
+      // updated. The WebpackDevServer client is included as an entry point
+      // in the Webpack development configuration. Note that only changes
+      // to CSS are currently hot reloaded. JS changes will refresh the browser.
+      hot: true,
+      // It is important to tell WebpackDevServer to use the same "root" path
+      // as we specified in the config. In development, we always serve from /.
+      publicPath: config.output.publicPath,
+      // WebpackDevServer is noisy by default so we emit custom message instead
+      // by listening to the compiler events with `compiler.plugin` calls above.
+      // quiet: true,
+      // Reportedly, this avoids CPU overload on some systems.
+      // https://github.com/facebookincubator/create-react-app/issues/293
+      watchOptions: {
+        ignored: /node_modules/
+      },
+      // Enable HTTPS if the HTTPS environment variable is set to 'true'
+      https: protocol === 'https',
+      host
+    }, compiler
+  );
 
   // Our custom middleware proxies requests to /index.html or a remote API.
   addMiddleware(devServer);
