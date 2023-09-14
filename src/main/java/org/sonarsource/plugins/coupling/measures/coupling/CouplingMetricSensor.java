@@ -7,8 +7,10 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonarsource.plugins.coupling.base.CouplingPluginConstants;
 import org.sonarsource.plugins.coupling.utils.*;
 import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.AFFERENT_COUPLING;
 import static org.sonarsource.plugins.coupling.measures.coupling.CouplingMetrics.EFFERENT_COUPLING;
@@ -115,53 +117,60 @@ public static Optional<Module> findModuleDataBySource(List<Module> moduleList, S
         LOGGER.debug(e.getMessage(), e);
     }
   }
+  private static boolean skipPlugin(Configuration config) {
+    return config.getBoolean(CouplingPluginConstants.SKIP_PROPERTY).orElse(CouplingPluginConstants.SKIP_PROPERTY_DEFAULT);
+  }
   @Override
   public void execute(SensorContext context) {
     FileSystem fs = context.fileSystem();
     // only "main" files, but not "tests"   
     try {
       // Access the value of the custom parameter
-      Optional<Analysis> jsonData = parseAnalysis(context);
-      LOGGER.info("************************");
-      LOGGER.info(jsonData.toString());
-      if (jsonData.isPresent()) {
-        Integer temp = jsonData.get().getModules().size();
-        LOGGER.info(temp.toString());
-      }
-      LOGGER.info("************************");
-      
-      Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasType(InputFile.Type.MAIN));
-      for (InputFile file : files) {
-        Integer cAvalue = 0;
-        Integer cEvalue = 0;
-        Optional<Module> module =  findModuleDataBySource(jsonData.get().getModules(),file.relativePath());
-        if(module.isPresent()){
-          cAvalue = module.get().getDependents().size();
-          cEvalue = module.get().getDependencies().size();
+      if (skipPlugin(context.config())) {
+        LOGGER.info("Coupling plugin skipped");
+      }else {
+        Optional<Analysis> jsonData = parseAnalysis(context);
+        LOGGER.info("************************");
+        LOGGER.info(jsonData.toString());
+        if (jsonData.isPresent()) {
+          Integer temp = jsonData.get().getModules().size();
+          LOGGER.info(temp.toString());
         }
-        context.<Integer>newMeasure()
-          .forMetric(AFFERENT_COUPLING)
-          .on(file)
-          .withValue(cAvalue)
-          .save();
-        context.<Integer>newMeasure()
-          .forMetric(EFFERENT_COUPLING)
-          .on(file)
-          .withValue(cEvalue)
-          .save();
-        Double instabilityValue = 0.0;
-          if(cAvalue != 0 || cEvalue != 0){
-            instabilityValue = cEvalue.doubleValue() / (cAvalue.doubleValue() + cEvalue.doubleValue());
+        LOGGER.info("************************");
+        
+        Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasType(InputFile.Type.MAIN));
+        for (InputFile file : files) {
+          Integer cAvalue = 0;
+          Integer cEvalue = 0;
+          Optional<Module> module =  findModuleDataBySource(jsonData.get().getModules(),file.relativePath());
+          if(module.isPresent()){
+            cAvalue = module.get().getDependents().size();
+            cEvalue = module.get().getDependencies().size();
           }
-          context.<Double>newMeasure()
-          .forMetric(INSTABILITY)
-          .on(file)
-          .withValue(instabilityValue)
-          .save();
+          context.<Integer>newMeasure()
+            .forMetric(AFFERENT_COUPLING)
+            .on(file)
+            .withValue(cAvalue)
+            .save();
+          context.<Integer>newMeasure()
+            .forMetric(EFFERENT_COUPLING)
+            .on(file)
+            .withValue(cEvalue)
+            .save();
+          Double instabilityValue = 0.0;
+            if(cAvalue != 0 || cEvalue != 0){
+              instabilityValue = cEvalue.doubleValue() / (cAvalue.doubleValue() + cEvalue.doubleValue());
+            }
+            context.<Double>newMeasure()
+            .forMetric(INSTABILITY)
+            .on(file)
+            .withValue(instabilityValue)
+            .save();
+        }
+        uploadHTMLReport(context);
+        uploadSvgReport(context);
+        uploadJsonReport(context);
       }
-      uploadHTMLReport(context);
-      uploadSvgReport(context);
-      uploadJsonReport(context);
   } catch (Exception e) {
       e.printStackTrace();
   }
